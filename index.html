@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechConf 2026 | 1-Day Technical Event</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #22d3ee;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition-color: #475569;
+            --lunch-color: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 2rem 1rem;
+            border-bottom: 1px solid #334155;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--accent-color), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-container {
+            margin-top: 1.5rem;
+        }
+
+        #categorySearch {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: var(--card-bg);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #categorySearch:focus {
+            border-color: var(--accent-color);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .timeline {
+            position: relative;
+        }
+
+        .event-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .time-slot {
+            min-width: 100px;
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            padding-top: 1.25rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            flex-grow: 1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: #334155;
+        }
+
+        .card.lunch {
+            border-left: 4px solid var(--lunch-color);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .card.transition {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 1px dashed var(--transition-color);
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
+        .talk-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .speakers {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .speakers::before {
+            content: "🎤";
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tag {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-color);
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .duration-badge {
+            float: right;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: #334155;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .event-item {
+                flex-direction: column;
+            }
+            .time-slot {
+                margin-bottom: 0.5rem;
+                padding-top: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>TechConf 2026</h1>
+            <p style="color: var(--text-muted)">Unlocking the Future of Software Engineering</p>
+            <div class="search-container">
+                <input type="text" id="categorySearch" placeholder="Search by category (e.g. AI, Backend, Cloud)...">
+            </div>
+        </div>
+    </header>
+
+    <main id="scheduleContainer">
+        <!-- Schedule will be injected here -->
+    </main>
+
+    <script>
+        const talks = [
+            {
+                id: 1,
+                type: 'talk',
+                startTime: '10:00 AM',
+                endTime: '11:00 AM',
+                title: 'The Evolution of Distributed Systems',
+                speakers: ['Sarah Drasner', 'Kelsey Hightower'],
+                categories: ['Backend', 'Infrastructure', 'Cloud'],
+                duration: '60 min',
+                description: 'A deep dive into how modern distributed systems have evolved from monolithic architectures to globally resilient microservices.'
+            },
+            {
+                id: 2,
+                type: 'transition',
+                startTime: '11:00 AM',
+                endTime: '11:10 AM',
+                title: 'Transition Break'
+            },
+            {
+                id: 3,
+                type: 'talk',
+                startTime: '11:10 AM',
+                endTime: '12:10 PM',
+                title: 'AI-First Development Workflows',
+                speakers: ['Andrej Karpathy'],
+                categories: ['AI', 'Productivity'],
+                duration: '60 min',
+                description: 'How Large Language Models are reshaping the way we write, test, and deploy code in 2026.'
+            },
+            {
+                id: 4,
+                type: 'transition',
+                startTime: '12:10 PM',
+                endTime: '12:20 PM',
+                title: 'Transition Break'
+            },
+            {
+                id: 5,
+                type: 'talk',
+                startTime: '12:20 PM',
+                endTime: '1:20 PM',
+                title: 'Mastering Rust for System Tools',
+                speakers: ['Steve Klabnik'],
+                categories: ['Rust', 'Systems'],
+                duration: '60 min',
+                description: 'Exploring the safety and performance trade-offs when building mission-critical system utilities with Rust.'
+            },
+            {
+                id: 6,
+                type: 'lunch',
+                startTime: '1:20 PM',
+                endTime: '2:20 PM',
+                title: 'Lunch Break & Networking',
+                description: 'Enjoy a catered lunch and connect with fellow developers.'
+            },
+            {
+                id: 7,
+                type: 'talk',
+                startTime: '2:20 PM',
+                endTime: '3:20 PM',
+                title: 'Next-Gen Frontend Architectures',
+                speakers: ['Dan Abramov', 'Rich Harris'],
+                categories: ['Frontend', 'JavaScript', 'Web'],
+                duration: '60 min',
+                description: 'A discussion on the convergence of server-side rendering and client-side interactivity.'
+            },
+            {
+                id: 8,
+                type: 'transition',
+                startTime: '3:20 PM',
+                endTime: '3:30 PM',
+                title: 'Transition Break'
+            },
+            {
+                id: 9,
+                type: 'talk',
+                startTime: '3:30 PM',
+                endTime: '4:30 PM',
+                title: 'Cybersecurity in the Post-Quantum Era',
+                speakers: ['Bruce Schneier'],
+                categories: ['Security', 'Cryptography'],
+                duration: '60 min',
+                description: 'Preparing our digital infrastructure for the challenges posed by quantum computing.'
+            },
+            {
+                id: 10,
+                type: 'transition',
+                startTime: '4:30 PM',
+                endTime: '4:40 PM',
+                title: 'Transition Break'
+            },
+            {
+                id: 11,
+                type: 'talk',
+                startTime: '4:40 PM',
+                endTime: '5:40 PM',
+                title: 'Sustainability in Cloud Computing',
+                speakers: ['Adrian Cockcroft'],
+                categories: ['Sustainability', 'Cloud', 'Green-IT'],
+                duration: '60 min',
+                description: 'Strategies for measuring and reducing the carbon footprint of your cloud infrastructure.'
+            }
+        ];
+
+        const container = document.getElementById('scheduleContainer');
+        const searchInput = document.getElementById('categorySearch');
+
+        function renderSchedule(filter = '') {
+            container.innerHTML = '';
+            const normalizedFilter = filter.toLowerCase().trim();
+
+            let visibleCount = 0;
+
+            talks.forEach(item => {
+                let isVisible = true;
+                
+                if (normalizedFilter && item.type === 'talk') {
+                    isVisible = item.categories.some(cat => cat.toLowerCase().includes(normalizedFilter));
+                }
+
+                if (isVisible) {
+                    visibleCount++;
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'event-item';
+                    
+                    let content = '';
+                    if (item.type === 'talk') {
+                        content = `
+                            <div class="time-slot">${item.startTime}</div>
+                            <div class="card">
+                                <span class="duration-badge">${item.duration}</span>
+                                <h3 class="talk-title">${item.title}</h3>
+                                <div class="speakers">${item.speakers.join(', ')}</div>
+                                <div class="categories">
+                                    ${item.categories.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
+                                </div>
+                                <p class="description">${item.description}</p>
+                            </div>
+                        `;
+                    } else if (item.type === 'lunch') {
+                        content = `
+                            <div class="time-slot">${item.startTime}</div>
+                            <div class="card lunch">
+                                <h3 class="talk-title">🍱 ${item.title}</h3>
+                                <p class="description">${item.description}</p>
+                            </div>
+                        `;
+                    } else {
+                        // Transitions are hidden when filtering
+                        if (normalizedFilter) return; 
+                        content = `
+                            <div class="time-slot" style="color: var(--transition-color)">${item.startTime}</div>
+                            <div class="card transition">
+                                ${item.title} (10 min)
+                            </div>
+                        `;
+                    }
+
+                    itemEl.innerHTML = content;
+                    container.appendChild(itemEl);
+                }
+            });
+
+            if (visibleCount === 0) {
+                container.innerHTML = '<div class="no-results">No talks found matching that category.</div>';
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            renderSchedule(e.target.value);
+        });
+
+        // Initial render
+        renderSchedule();
+    </script>
+</body>
+</html>
